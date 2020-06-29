@@ -17,8 +17,8 @@ library(emmeans)#for least squares means, new
 #library(lsmeans) #for least squares means, old
 #library(ggforce)#for some ellipses on ordintions
 
-save.image("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Stats/Gradient/workspace3.Rdata")  # 
-load("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Stats/Gradient/workspace3.Rdata")  # 
+save.image("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Stats/Gradient/workspace4.Rdata")  # 
+load("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Stats/Gradient/workspace4.Rdata")  # 
 
 
 #Bioinformatics on fungi and bacteria with modifications from me

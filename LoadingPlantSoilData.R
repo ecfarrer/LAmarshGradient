@@ -161,7 +161,10 @@ dat17$Transect2<-plyr::revalue(dat17$Transect,c("Phragmites"="Monoculture"))
 dat17$MarshClassV.Transect<-interaction(dat17$MarshClassV,dat17$Transect)
 dat17$MarshClassV.Transect<-factor(dat17$MarshClassV.Transect,levels=c("Fresh.Native","Fresh.Transition","Fresh.Phragmites","Brackish.Native","Brackish.Transition","Brackish.Phragmites","Saline.Native","Saline.Transition","Saline.Phragmites"))
 
-
+dat17I<-dat17%>%
+  filter(Site!="LUMCON 1",Site!="LUMCON 2")
+dat17aI<-dat17a%>%
+  filter(Site!="LUMCON 1",Site!="LUMCON 2")
 
 #errors in nat/trans/phrag designation in the sp comp files
 #2019

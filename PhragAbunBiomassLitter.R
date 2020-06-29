@@ -24,6 +24,17 @@ m1m<-as.data.frame(summary(emmeans(m2,~Transect2|MarshClassV)))
 m1<-lme(phraus~MarshClassV.Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17phrag)
 summary(glht(m1, linfct = mcp(MarshClassV.Transect = "Tukey")))
 
+#only haplotype I
+dat17phragI<-dat17phrag%>%
+  filter(Site!="LUMCON 1",Site!="LUMCON 2")
+dat17phragI$MarshClassV.Transect<-factor(dat17phragI$MarshClassV.Transect, levels=c("Fresh.Transition","Fresh.Phragmites","Brackish.Transition","Brackish.Phragmites"))
+m3<-lme(phraus~MarshClassV*Transect2,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17phragI)#
+#m4<-lme(phraus~MarshClassV*Transect2,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17phragI)#
+anova(m3,m4)
+anova(m3,type="margin")
+m3<-lme(phraus~MarshClassV.Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17phragI)
+summary(glht(m3, linfct = mcp(MarshClassV.Transect = "Tukey")))
+
 #Final fig for manuscript
 pdf("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Manuscripts/Gradientms/Figs/phragabun.pdf",width=2.2,height=2.2)
 ggplot(m1m,aes(x=Transect2,y=emmean,color=Transect2,group=MarshClassV))+
@@ -151,6 +162,12 @@ m1biomass<-as.data.frame(summary(emmeans(m1,~Transect|MarshClassV)))
 m1<-lme(biomasskg~MarshClassVTransect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17,na.action=na.omit)
 summary(glht(m1, linfct = mcp(MarshClassVTransect = "Tukey")))
 
+#Only on haplotype I
+m1<-lme(biomasskg~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17I,na.action=na.omit,control = lmeControl(maxIter=100,msMaxIter = 100))
+m2<-lme(biomasskg~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17I,na.action=na.omit)
+anova(m1,m2) #het var is sig
+anova(m1,type="marginal")
+
 
 
 #Litter
@@ -170,6 +187,12 @@ m2<-lme(litterkg~MarshClassV.Transect,random=~1|Site,correlation=corSpher(form =
 summary(glht(m2, linfct = mcp(MarshClassV.Transect=c("Fresh.Native-Fresh.Transition=0","Fresh.Native-Fresh.Phragmites=0","Fresh.Transition-Fresh.Phragmites=0","Brackish.Native-Brackish.Transition=0","Brackish.Native-Brackish.Phragmites=0","Brackish.Transition-Brackish.Phragmites=0","Saline.Native-Saline.Transition=0","Saline.Native-Saline.Phragmites=0","Saline.Transition-Saline.Phragmites=0"))))
 
 #Note: when doing Tukey contrasts, if you have interaction terms you need to use helmert contrasts. it should be fine to have interactions as long as they are not significant.
+
+#Only on haplotype I
+m1<-lme(litterkg~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17I,na.action=na.omit,control = lmeControl(maxIter=100,msMaxIter = 100))
+m2<-lme(litterkg~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17I,na.action=na.omit)
+anova(m1,m2) #het var is sig
+anova(m1,type="marginal")
 
 
 #Figures by marsh class
@@ -271,6 +294,13 @@ summary(glht(m1, linfct = mcp(MarshClassV.Transect=c("Fresh.Native-Fresh.Transit
 
 #how to do least squares means using glht()
 #summary(glht(m1, linfct = lsm(~ MarshClassV.Transect)))
+
+#Only on haplotype I
+m1<-lme(NatAbun~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17I,na.action=na.omit,control = lmeControl(maxIter=100,msMaxIter = 100))
+m2<-lme(NatAbun~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17I,na.action=na.omit)
+anova(m1,m2) #het var is sig
+anova(m1,type="marginal")
+
 
 #Final fig for manuscript
 pdf("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Manuscripts/Gradientms/Figs/natabunhetvar.pdf",width=2.2,height=2.2)

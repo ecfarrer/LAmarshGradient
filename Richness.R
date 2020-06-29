@@ -23,6 +23,12 @@ m2<-lme(NatRichness~MarshClassV.Transect,random=~1|Site,correlation=corSpher(for
 #summary(glht(m1, linfct = mcp(Transect = "Tukey")))
 summary(glht(m2, linfct = mcp(MarshClassV.Transect=c("Fresh.Native-Fresh.Transition=0","Fresh.Native-Fresh.Phragmites=0","Fresh.Transition-Fresh.Phragmites=0","Brackish.Native-Brackish.Transition=0","Brackish.Native-Brackish.Phragmites=0","Brackish.Transition-Brackish.Phragmites=0","Saline.Native-Saline.Transition=0","Saline.Native-Saline.Phragmites=0","Saline.Transition-Saline.Phragmites=0"))))
 
+#Only on haplotype I
+m1<-lme(NatRichness~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17I,na.action=na.omit,control = lmeControl(maxIter=100,msMaxIter = 100))
+m2<-lme(NatRichness~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17I,na.action=na.omit)
+anova(m1,m2) #het var is sig
+anova(m1,type="marginal")
+
 #Final fig for manuscript
 pdf("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Manuscripts/Gradientms/Figs/natrichhetvar.pdf",width=2.2,height=2.2)
 ggplot(m1P,aes(x=Transect,y=emmean,color=Transect,group=MarshClassV))+
@@ -85,6 +91,12 @@ m2<-lme(Chao1ITS~MarshClassV.Transect,random=~1|Site,correlation=corSpher(form =
 #summary(glht(m1, linfct = mcp(Transect = "Tukey")))
 summary(glht(m2, linfct = mcp(MarshClassV.Transect=c("Fresh.Native-Fresh.Transition=0","Fresh.Native-Fresh.Phragmites=0","Fresh.Transition-Fresh.Phragmites=0","Brackish.Native-Brackish.Transition=0","Brackish.Native-Brackish.Phragmites=0","Brackish.Transition-Brackish.Phragmites=0","Saline.Native-Saline.Transition=0","Saline.Native-Saline.Phragmites=0","Saline.Transition-Saline.Phragmites=0"))))
 
+#Only on haplotype I
+m1<-lme(Chao1ITS~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17I,na.action=na.omit)
+m2<-lme(Chao1ITS~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17I,na.action=na.omit)
+anova(m1,m2) #het var is not sig
+anova(m2,type="marginal")
+
 #Final fig for manuscript
 pdf("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Manuscripts/Gradientms/Figs/fungirich.pdf",width=2.2,height=2.2)
 ggplot(m1F,aes(x=Transect,y=emmean,color=Transect,group=MarshClassV))+
@@ -136,6 +148,12 @@ m1B<-as.data.frame(summary(emmeans(m2,~Transect|MarshClassV)))
 m2<-lme(Chao1Bac~MarshClassV.Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17a,na.action=na.omit)
 #summary(glht(m1, linfct = mcp(Transect = "Tukey")))
 summary(glht(m2, linfct = mcp(MarshClassV.Transect=c("Fresh.Native-Fresh.Transition=0","Fresh.Native-Fresh.Phragmites=0","Fresh.Transition-Fresh.Phragmites=0","Brackish.Native-Brackish.Transition=0","Brackish.Native-Brackish.Phragmites=0","Brackish.Transition-Brackish.Phragmites=0","Saline.Native-Saline.Transition=0","Saline.Native-Saline.Phragmites=0","Saline.Transition-Saline.Phragmites=0"))))
+
+#Only on haplotype I
+m1<-lme(Chao1Bac~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),weights=varIdent(form=~1|MarshClassV.Transect),data=dat17aI,na.action=na.omit)
+m2<-lme(Chao1Bac~MarshClassV*Transect,random=~1|Site,correlation=corSpher(form = ~ Lat+Long),data=dat17aI,na.action=na.omit)
+anova(m1,m2) #het var is sig
+anova(m1,type="marginal")
 
 #Final fig for manuscript
 pdf("/Users/farrer/Dropbox/EmilyComputerBackup/Documents/LAmarsh/Survey/Manuscripts/Gradientms/Figs/bacteriarichhetvar.pdf",width=2.2,height=2.2)
@@ -315,6 +333,17 @@ m1
 m2<-deming(rich$Chao1Bac_mean~rich$NatRichness_mean,xstd=rich$NatRichness_sd,ystd = rich$Chao1Bac_sd)#,cv=T or F gives same exact results
 m2
 m3<-deming(rich$Chao1Bac_mean~rich$Chao1ITS_mean,xstd=rich$Chao1ITS_sd,ystd = rich$Chao1Bac_sd)#,cv=T or F gives same exact results
+m3
+
+
+
+#Only haplotype I
+richI<-rich[1:6,]
+m1<-deming(richI$Chao1ITS_mean~richI$NatRichness_mean,xstd=richI$NatRichness_sd,ystd = richI$Chao1ITS_sd)#,cv=T or F gives same exact results
+m1
+m2<-deming(richI$Chao1Bac_mean~richI$NatRichness_mean,xstd=richI$NatRichness_sd,ystd = richI$Chao1Bac_sd)#,cv=T or F gives same exact results
+m2
+m3<-deming(richI$Chao1Bac_mean~richI$Chao1ITS_mean,xstd=richI$Chao1ITS_sd,ystd = richI$Chao1Bac_sd)#,cv=T or F gives same exact results
 m3
 
 

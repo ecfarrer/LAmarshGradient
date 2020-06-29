@@ -112,9 +112,22 @@ dev.off()
 #brackish 669900
 #saline cc0000
 
-temp<-tempphyP%>%
-  subset_samples(Site%in%c("LUMCON 1","LUMCON 2"))
-otu_table(temp)
+
+##### Only on haplotype I ####
+tempphyPI<-tempphyP%>%
+  subset_samples(Site!="LUMCON 1",Site!="LUMCON 2")
+mynmdsPI <- ordinate(tempphyPI, "CAP",distance(tempphyPI, method = "jaccard", binary = TRUE),formula=as.formula(~MarshClassV*Transect))
+anova(mynmdsPI,by="terms",permutations = how(blocks=sample_data(tempphyPI)$Site,nperm=9999))
+mynmdsPI <- ordinate(tempphyPI, "CAP",distance(tempphyPI, method = "jaccard", binary = TRUE),formula=as.formula(~MarshClassV+Condition(Transect)));mynmdsPI
+mynmdsPI <- ordinate(tempphyPI, "CAP",distance(tempphyPI, method = "jaccard", binary = TRUE),formula=as.formula(~Transect+Condition(MarshClassV)));mynmdsPI
+mynmdsPI <- ordinate(tempphyPI, "CAP",distance(tempphyPI, method = "jaccard", binary = TRUE),formula=as.formula(~MarshClassV*Transect+Condition(Transect+MarshClassV)));mynmdsPI
+
+#Testing out varpart
+tempphyPIdf<-data.frame(sample_data(tempphyPI))
+#varpart still does not allow you to test the marginal effect of a main effect over the interaction effect
+varpart(distance(tempphyPI, method = "jaccard", binary = TRUE), ~MarshClassV,~Transect,data=tempphyPIdf)
+varpart(t(otu_table(tempphyPI)), ~MarshClassV,~Transect,~MarshClassV*Transect,data=tempphyPIdf)
+
 
 #upshot, need to use with phrag, either bray and nmds or jaccard and pcoa
 
@@ -245,6 +258,19 @@ plot_ordination(tempphyF, mynmdsF, type="samples", color="MarshClassVTransect",a
   scale_fill_manual(values = c("#0047b3", "#99c2ff","#2d862d","#79d279","#b30000","#ff8080"),labels = c("Fresh Native", "Fresh Monoculture","Brackish Native","Brackish Monoculture","Saline Native","Saline Monoculture"),name = "Marsh Class/Transect")+
   stat_ellipse(geom = "polygon", type="t", alpha=0.2, aes(fill=MarshClass_Transect),level=.95)
 dev.off()
+
+
+##### Only on haplotype I #####
+tempphyFI<-tempphyF%>%
+  subset_samples(Site!="LUMCON 1",Site!="LUMCON 2")%>%
+  filter_taxa(function(x) sum(x>0) >2, prune=T)
+mynmdsFI <- ordinate(tempphyFI, "CAP", "bray",formula=as.formula(~MarshClassV*Transect))
+anova(mynmdsFI,by="terms",permutations = how(blocks=sample_data(tempphyFI)$Site,nperm=9999))
+mynmdsFI <- ordinate(tempphyFI, "CAP","bray",formula=as.formula(~MarshClassV+Condition(Transect)));mynmdsFI
+mynmdsFI <- ordinate(tempphyFI, "CAP","bray",formula=as.formula(~Transect+Condition(MarshClassV)));mynmdsFI
+mynmdsFI <- ordinate(tempphyFI, "CAP","bray",formula=as.formula(~MarshClassV*Transect+Condition(Transect+MarshClassV)));mynmdsFI
+
+
 
 
 ###### Fungi - separate ordinations within marsh type #####
@@ -391,6 +417,17 @@ plot_ordination(tempphyB, mynmdsB, type="samples", color="MarshClassVTransect",a
   scale_fill_manual(values = c("#0047b3", "#99c2ff","#2d862d","#79d279","#b30000","#ff8080"),labels = c("Fresh Native", "Fresh Phragmites","Brackish Native","Brackish Phragmites","Saline Native","Saline Phragmites"),name = "Marsh Class/Invasion")+
   stat_ellipse(geom = "polygon", type="t", alpha=0.2, aes(fill=MarshClass_Transect),level=.95)
 dev.off()
+
+
+##### Only on haplotype I #####
+tempphyBI<-tempphyB%>%
+  subset_samples(Site!="LUMCON 1",Site!="LUMCON 2")%>%
+  filter_taxa(function(x) sum(x>0) >2, prune=T)
+mynmdsBI <- ordinate(tempphyBI, "CAP", "bray",formula=as.formula(~MarshClassV*Transect))
+anova(mynmdsBI,by="terms",permutations = how(blocks=sample_data(tempphyBI)$Site,nperm=9999))
+mynmdsBI <- ordinate(tempphyBI, "CAP","bray",formula=as.formula(~MarshClassV+Condition(Transect)));mynmdsBI
+mynmdsBI <- ordinate(tempphyBI, "CAP","bray",formula=as.formula(~Transect+Condition(MarshClassV)));mynmdsBI
+mynmdsBI <- ordinate(tempphyBI, "CAP","bray",formula=as.formula(~MarshClassV*Transect+Condition(Transect+MarshClassV)));mynmdsBI
 
 
 
@@ -908,6 +945,22 @@ m1
 
 m1<-deming(outputBac2$mean~outputITS2$mean,xstd=outputITS2$sd,ystd = outputBac2$sd,conf=.95)#,cv=T or F gives same exact results
 m1
+
+
+#Only haplotype I
+outputPlant2I<-outputPlant2[1:6,]
+outputITS2I<-outputITS2[1:6,]
+outputBac2I<-outputBac2[1:6,]
+
+m1<-deming(outputITS2I$mean~outputPlant2I$mean,xstd=outputPlant2I$sd2,ystd = outputITS2I$sd)#,cv=T or F gives same exact results
+m1
+
+m1<-deming(outputBac2I$mean~outputPlant2I$mean,xstd=outputPlant2I$sd2,ystd = outputBac2I$sd)#,cv=T or F gives same exact results
+m1
+
+m1<-deming(outputBac2I$mean~outputITS2I$mean,xstd=outputITS2I$sd,ystd = outputBac2I$sd,conf=.95)#,cv=T or F gives same exact results
+m1
+
 
 
 #plotting 
